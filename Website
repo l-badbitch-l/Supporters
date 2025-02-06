@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Anita's 1M+ Supporters 🔥</title>
+    <script type="module">
+        // ✅ Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+
+        // ✅ Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZfxiwXAGJonEQTkN_vSxewgObGJj1GKc",
+            authDomain: "ansupporters.firebaseapp.com",
+            databaseURL: "https://ansupporters-default-rtdb.firebaseio.com",
+            projectId: "ansupporters",
+            storageBucket: "ansupporters.firebasestorage.app",
+            messagingSenderId: "331355575731",
+            appId: "1:331355575731:web:c81e3523c83a3d2d51a7c6"
+        };
+
+        // ✅ Admin Key (REQUIRED to Access Data)
+        const ADMIN_KEY = "56qpkh8o0Jh2WynxJE3KZxtxSBXOHgxL2oMrqIw6";
+
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const counterRef = ref(database, "supportersCount");
+
+        // 🏆 Load the Last Saved Count
+        async function loadCounter() {
+            try {
+                let snapshot = await fetch(`https://ansupporters-default-rtdb.firebaseio.com/supportersCount.json?auth=${ADMIN_KEY}`)
+                                    .then(response => response.json());
+
+                let count = snapshot ?? 1000000; // Default 1M if empty
+                document.getElementById("counter").innerText = count.toLocaleString();
+            } catch (error) {
+                document.getElementById("counter").innerText = "🔒 Access Denied!";
+                console.error("❌ Firebase Error: ", error);
+            }
+        }
+
+        // 🔥 Auto-Increase Supporters Every 3 Seconds
+        async function autoIncrease() {
+            try {
+                let snapshot = await fetch(`https://ansupporters-default-rtdb.firebaseio.com/supportersCount.json?auth=${ADMIN_KEY}`)
+                                    .then(response => response.json());
+
+                let currentCount = snapshot ?? 1000000;
+                let newCount = currentCount + Math.floor(Math.random() * 8) + 1; // Add 1-8
+
+                await fetch(`https://ansupporters-default-rtdb.firebaseio.com/supportersCount.json?auth=${ADMIN_KEY}`, {
+                    method: "PUT",
+                    body: JSON.stringify(newCount),
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                document.getElementById("counter").innerText = newCount.toLocaleString();
+            } catch (error) {
+                console.error("❌ Firebase Update Error:", error);
+            }
+        }
+
+        // ⏳ Load Counter & Start Auto-Increase
+        window.onload = () => {
+            loadCounter();
+            setInterval(autoIncrease, 3000); // Every 3 seconds
+        };
+    </script>
+    <style>
+        body {
+            background: black;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .counter-box {
+            font-size: 50px;
+            font-weight: bold;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+            padding: 50px;
+            margin-top: 50px;
+            border: 2px solid #ff00ff;
+            display: inline-block;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #ff00ff;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">🔥 Anita Lois - The Bad Bitch Nation 🔥</h1>
+    <h2>💖 Supporters 💖</h2>
+    <div class="counter-box" id="counter">Loading...</div>
+</body>
+</html>
